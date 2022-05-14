@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
+import 'package:readdata/components/informationPerson.component.dart';
+import 'package:readdata/models/datatext.model.dart';
+import 'package:readdata/models/informationDocuments.model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,17 +12,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String textDisplay = "";
-  String _extractText = "";
+  InformationDocuments _extractText = InformationDocuments("");
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.amber,
-        title: Text("TessTest"),
+        title: Text("OCR Venezuela"),
       ),
       body: ListView(
-        children: [],
+        children: [
+          InformationPersonComponent(_extractText)
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: captureData,
@@ -36,16 +40,26 @@ class _HomePageState extends State<HomePage> {
   captureData() async {
     // File? _pickedImage;
     // _pickedImage = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
-    final picker = ImagePicker();
-    PickedFile? pickedFile = await picker.getImage(source: ImageSource.gallery);
-    if(pickedFile?.path != null){
-      _extractText = await FlutterTesseractOcr.extractText(pickedFile!.path, language: 'spa+eng',
-        args: {
-          "psm": "4",
-          "preserve_interword_spaces": "1",
-        });
-    }
-final stop = true;
+
+    // final picker = ImagePicker();
+    // PickedFile? pickedFile = await picker.getImage(source: ImageSource.gallery);
+    // if(pickedFile?.path != null){
+    //   _extractText = await FlutterTesseractOcr.extractText(pickedFile!.path, language: 'spa',
+    //     args: {
+    //       "psm": "4",
+    //       "preserve_interword_spaces": "1",
+    //     });
+    // }
+        
+      // _extractText = await FlutterTesseractOcr.extractText(pickedFile.path, language: 'spa+eng',
+      //   args: {
+      //     "psm": "4",
+      //     "preserve_interword_spaces": "1",
+      //   });
+    _extractText = await DataTextExtract.captureData();
+    setState(() {
+    });
+
   }
 }
 
