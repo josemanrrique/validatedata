@@ -8,7 +8,7 @@ class DataTextExtract {
     // _pickedImage = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     InformationDocuments extractText = InformationDocuments("");
     final picker = ImagePicker();
-    PickedFile? pickedFile = await picker.getImage(source: ImageSource.gallery);
+    PickedFile? pickedFile = await picker.getImage(source: ImageSource.gallery,  imageQuality: 100);
     if(pickedFile?.path != null){
       extractText = InformationDocuments( await FlutterTesseractOcr.extractText(pickedFile!.path, language: 'spa',
         args: {
