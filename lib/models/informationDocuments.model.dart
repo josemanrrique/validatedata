@@ -7,5 +7,9 @@ class InformationDocuments {
   }
   bool hasData = false;
   late String dataRaw;
-  String? test;
+  String? id;
+  String? name;
+  String? lastname;
+  String? dateOfBirth;
+  bool active = false;
 }

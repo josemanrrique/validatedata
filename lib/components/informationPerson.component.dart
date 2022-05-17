@@ -8,7 +8,19 @@ class InformationPersonComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(data.hasData ? data.dataRaw : "No hay informacion");
+    return 
+    (data.active) ?
+     Row(
+      children:[
+        Text(data.id != null ? data.id! : "No se pudo extraer el numero de identificacion"),
+        Text(data.name != null ? data.name! : "No se pudo extraer el nombre"),
+        Text(data.lastname != null ? data.lastname! : "No se pudo extraer el apellido"),
+        Text(data.dateOfBirth != null ? data.dateOfBirth! : "No se pudo extraer la fehca de nacimiento"),
+      ]
+    ) :
+    Text("La fecha de expiracion no es válida");
+    
+    
   }
 }
 
