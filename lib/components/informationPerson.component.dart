@@ -10,7 +10,7 @@ class InformationPersonComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return 
     (data.active) ?
-     Row(
+     Column(
       children:[
         Text(data.id != null ? data.id! : "No se pudo extraer el numero de identificacion"),
         Text(data.name != null ? data.name! : "No se pudo extraer el nombre"),
