@@ -19,8 +19,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.amber,
-        title: Text("OCR Venezuela"),
+        backgroundColor: Colors.blueGrey,
+        title: const Text("OCR Venezuela"),
       ),
       body: ListView(
         children: [

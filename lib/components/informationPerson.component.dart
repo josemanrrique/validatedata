@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:readdata/models/informationDocuments.model.dart';
 
 class InformationPersonComponent extends StatelessWidget {
-  InformationPersonComponent(this.data);
+  const InformationPersonComponent(this.data, {Key? key}) : super(key: key);
 
   final InformationDocuments data;
 
