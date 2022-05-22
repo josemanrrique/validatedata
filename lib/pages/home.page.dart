@@ -14,8 +14,6 @@ class _HomePageState extends State<HomePage> {
   String textDisplay = "";
   InformationDocuments _extractText = InformationDocuments("");
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,14 +24,25 @@ class _HomePageState extends State<HomePage> {
       ),
       body: ListView(
         children: [
-          _extractText.hasData ?
-          InformationPersonComponent(_extractText) : const Text("No se ha leido ningun documento")
+          _extractText.hasData
+              ? InformationPersonComponent(_extractText)
+              : Container(
+                  child: const Text(
+                    "No se ha leido ningun documento",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  padding: const EdgeInsets.only(top: 10.0),
+                ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: captureData,
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.camera),
       ), //
     );
   }
@@ -51,16 +60,14 @@ class _HomePageState extends State<HomePage> {
     //       "preserve_interword_spaces": "1",
     //     });
     // }
-        
-      // _extractText = await FlutterTesseractOcr.extractText(pickedFile.path, language: 'spa+eng',
-      //   args: {
-      //     "psm": "4",
-      //     "preserve_interword_spaces": "1",
-      //   });
-    _extractText = await DataTextExtract.captureData();
-    setState(() {
-    });
 
+    // _extractText = await FlutterTesseractOcr.extractText(pickedFile.path, language: 'spa+eng',
+    //   args: {
+    //     "psm": "4",
+    //     "preserve_interword_spaces": "1",
+    //   });
+    _extractText = await DataTextExtract.captureData();
+    setState(() {});
   }
 }
 

@@ -8,19 +8,43 @@ class InformationPersonComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    (data.active) ?
-     Column(
-      children:[
-        Text(data.id != null ? data.id! : "No se pudo extraer el numero de identificacion"),
-        Text(data.name != null ? data.name! : "No se pudo extraer el nombre"),
-        Text(data.lastname != null ? data.lastname! : "No se pudo extraer el apellido"),
-        Text(data.dateOfBirth != null ? data.dateOfBirth! : "No se pudo extraer la fehca de nacimiento"),
-      ]
-    ) :
-    const Text("La fecha de expiracion no es válida");
-    
-    
+    return (data.active)
+        ? Column(children: [
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+            _getInformation("Número :", data.id,
+                "No se pudo extraer el numero de identificacion"),
+            _getInformation(
+                "Nombre :", data.name, "No se pudo extraer el nombre"),
+            _getInformation(
+                "Apellido :", data.lastname, "No se pudo extraer el apellido"),
+            _getInformation("Fecha de Nac :", data.dateOfBirth,
+                "No se pudo extraer la fehca de nacimiento"),
+          ])
+        : const Text("La fecha de expiracion no es válida");
+  }
+
+  _getInformation(label, data, noData) {
+    return Row(
+      children: [
+        const Padding(padding: EdgeInsets.only(left: 15.0)),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        const Padding(padding: EdgeInsets.only(left: 15.0)),
+        Text(
+          data ?? noData,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 18,
+          ),
+        )
+      ],
+    );
   }
 }
 
