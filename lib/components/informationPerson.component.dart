@@ -18,7 +18,7 @@ class InformationPersonComponent extends StatelessWidget {
         Text(data.dateOfBirth != null ? data.dateOfBirth! : "No se pudo extraer la fehca de nacimiento"),
       ]
     ) :
-    Text("La fecha de expiracion no es válida");
+    const Text("La fecha de expiracion no es válida");
     
     
   }

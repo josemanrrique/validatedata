@@ -26,7 +26,8 @@ class _HomePageState extends State<HomePage> {
       ),
       body: ListView(
         children: [
-          InformationPersonComponent(_extractText)
+          _extractText.hasData ?
+          InformationPersonComponent(_extractText) : const Text("No se ha leido ningun documento")
         ],
       ),
       floatingActionButton: FloatingActionButton(
