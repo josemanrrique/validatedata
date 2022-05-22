@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String textDisplay = "";
+  bool _loading = false;
   InformationDocuments _extractText = InformationDocuments("");
 
   @override
@@ -24,19 +24,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: ListView(
         children: [
-          _extractText.hasData
-              ? InformationPersonComponent(_extractText)
-              : Container(
-                  child: const Text(
-                    "No se ha leido ningun documento",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  padding: const EdgeInsets.only(top: 10.0),
-                ),
+          _loading ? _getLoading() : _getBody(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -66,8 +54,39 @@ class _HomePageState extends State<HomePage> {
     //     "psm": "4",
     //     "preserve_interword_spaces": "1",
     //   });
-    _extractText = await DataTextExtract.captureData();
+    _loading = true;
     setState(() {});
+
+    _extractText = await DataTextExtract.captureData();
+    _loading = false;
+    setState(() {});
+  }
+
+  _getBody() {
+    return _extractText.hasData
+        ? InformationPersonComponent(_extractText)
+        : Container(
+            child: const Text(
+              "Escanee un documento para comenzar",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            padding: const EdgeInsets.only(top: 10.0),
+          );
+  }
+
+  _getLoading() {
+    return Container(
+      child: const Image(
+          image: AssetImage(
+            'assets/loading.gif',
+          ),
+          fit: BoxFit.cover),
+      padding: const EdgeInsets.only(top: 10.0),
+    );
   }
 }
 

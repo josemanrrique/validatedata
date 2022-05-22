@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readdata/components/photoCrop.dart';
 import 'package:readdata/models/informationDocuments.model.dart';
 
 class InformationPersonComponent extends StatelessWidget {
@@ -19,6 +20,7 @@ class InformationPersonComponent extends StatelessWidget {
                 "Apellido :", data.lastname, "No se pudo extraer el apellido"),
             _getInformation("Fecha de Nac :", data.dateOfBirth,
                 "No se pudo extraer la fehca de nacimiento"),
+                ImageDocument(data.photoDocumen!),
           ])
         : const Text("La fecha de expiracion no es válida");
   }

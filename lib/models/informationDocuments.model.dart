@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class InformationDocuments {
   bool hasData = false;
   late String dataRaw = "";
@@ -5,12 +7,15 @@ class InformationDocuments {
   String? name;
   String? lastname;
   String? dateOfBirth;
+  File? photoDocumen;
   bool active = false;
 
-  InformationDocuments(dataRaw) {
+  InformationDocuments(dataRaw,{ String? path}) {
     if (dataRaw != "") {
       this.dataRaw = dataRaw;
       _extractText(dataRaw);
+      photoDocumen = File(path!);
+      hasData = true;
     }
   }
 
@@ -29,7 +34,6 @@ class InformationDocuments {
     lastname = _getName(dataSplit[index + 2]); //dataSplit[index + 2];
     dateOfBirth = _getDateOfBirth(dataAux.replaceAll(_id!, ""));
     active = _getDateExp(dataAux);
-    hasData = true;
   }
 
   String? _getnumberci(data) {
