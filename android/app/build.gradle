@@ -43,8 +43,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "ataddaer.elpmaxe.moc1653233469965"
-        minSdkVersion 21
+        applicationId "com.example.readdata"
+        minSdkVersion 18
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
