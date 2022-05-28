@@ -50,7 +50,7 @@ class InformationDocuments {
     var result = false;
     for (RegExpMatch match in matches) {
       final date = data.substring(match.start + 2, match.end);
-      if (now.year < int.parse(date)) {
+      if (now.year > int.parse(date)) {
         //revisa, cambiar condicion para que la fecha no este vencida
         result = true;
       }

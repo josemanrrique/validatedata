@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:readdata/components/informationPerson.component.dart';
 import 'package:readdata/models/datatext.model.dart';
 import 'package:readdata/models/informationDocuments.model.dart';
+import 'package:custom_image_crop/custom_image_crop.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,6 +15,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _loading = false;
   InformationDocuments _extractText = InformationDocuments("");
+  late CustomImageCropController controller;
+  late PickedFile? _pickedFile;
+  late int step = 1;
+  @override
+  void initState() {
+    super.initState();
+    controller = CustomImageCropController();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,48 +38,95 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.blueGrey,
         title: const Text("OCR Venezuela"),
       ),
-      body: ListView(
-        children: [
-          _loading ? _getLoading() : _getBody(),
-        ],
-      ),
+      // body: ListView(
+      //_loading ? _getLoading() : _getBody(),
+      //   ],
+      // ),
+      body: _getStepCurrent(),
       floatingActionButton: FloatingActionButton(
         onPressed: captureData,
         tooltip: 'Increment',
-        child: const Icon(Icons.camera),
+        child: _getIconFloatingActionButton(),
       ), //
     );
   }
 
+  _getIconFloatingActionButton() {
+    if (step == 1) {
+      return const Icon(Icons.camera);
+    } else if (step == 2) {
+      return const Icon(Icons.crop);
+    } else if (step == 3) {
+      return const Icon(Icons.restore_rounded);
+    } else {
+      return const Icon(Icons.camera);
+    }
+  }
+
   captureData() async {
-    // File? _pickedImage;
-    // _pickedImage = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
-
-    // final picker = ImagePicker();
-    // PickedFile? pickedFile = await picker.getImage(source: ImageSource.gallery);
-    // if(pickedFile?.path != null){
-    //   _extractText = await FlutterTesseractOcr.extractText(pickedFile!.path, language: 'spa',
-    //     args: {
-    //       "psm": "4",
-    //       "preserve_interword_spaces": "1",
-    //     });
-    // }
-
-    // _extractText = await FlutterTesseractOcr.extractText(pickedFile.path, language: 'spa+eng',
-    //   args: {
-    //     "psm": "4",
-    //     "preserve_interword_spaces": "1",
-    //   });
-    _loading = true;
-    setState(() {});
-
-    _extractText = await DataTextExtract.captureData();
-    _loading = false;
+    if (step == 1) {
+      _pickedFile = await DataTextExtract.readPhoto();
+      step = 2;
+    } else if (step == 2) {
+      _loading = true;
+      step = 3;
+      setState(() {});
+      _extractText = await DataTextExtract.captureData(_pickedFile);
+      _loading = false;
+    } else {
+      step = 1;
+    }
     setState(() {});
   }
 
-  _getBody() {
-    return _extractText.hasData
+  _getStepCurrent() {
+    if (step == 1) {
+      return _getStep1();
+    } else if (step == 2) {
+      return _getStep2();
+    } else if (step == 3) {
+      return _loading ? _getLoading() : _getStep3();
+    } else {
+      return _getStep1();
+    }
+  }
+
+  _getStep1() {
+    return ListView(
+      children: [
+        Container(
+          child: const Text(
+            "Escanee un documento para comenzar",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          padding: const EdgeInsets.only(top: 10.0),
+        )
+      ],
+    );
+  }
+
+  _getStep2() {
+    return Column(children: [
+      Expanded(
+        child: CustomImageCrop(
+          cropController: controller,
+          // image: const AssetImage('assets/test.png'), // Any Imageprovider will work, try with a NetworkImage for example...
+          image: const NetworkImage(
+              'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png'),
+          shape: CustomCropShape.Square,
+        ),
+      )
+    ]);
+  }
+
+  _getStep3() {
+    return ListView(
+      children: [
+       _extractText.hasData
         ? InformationPersonComponent(_extractText)
         : Container(
             child: const Text(
@@ -75,7 +138,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             padding: const EdgeInsets.only(top: 10.0),
-          );
+          )
+      ],
+    );
   }
 
   _getLoading() {

@@ -35,6 +35,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   image_picker: ^0.8.5
   flutter_tesseract_ocr: ^0.4.19
+  custom_image_crop: ^0.0.4
 
 dev_dependencies:
   flutter_test:
