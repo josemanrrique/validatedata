@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+
 class InformationDocuments {
   bool hasData = false;
   late String dataRaw = "";
@@ -8,13 +10,16 @@ class InformationDocuments {
   String? lastname;
   String? dateOfBirth;
   File? photoDocumen;
+  Image? imageDNIFace;
   bool active = false;
 
-  InformationDocuments(dataRaw,{ String? path}) {
+  InformationDocuments(dataRaw,{ String? path, Image? imageFace}) {
     if (dataRaw != "") {
       this.dataRaw = dataRaw;
       _extractText(dataRaw);
       photoDocumen = File(path!);
+      if(imageFace != null)
+        imageDNIFace = imageFace;
       hasData = true;
     }
   }

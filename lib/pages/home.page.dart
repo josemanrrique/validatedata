@@ -5,7 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:readdata/components/informationPerson.component.dart';
 import 'package:readdata/models/datatext.model.dart';
 import 'package:readdata/models/informationDocuments.model.dart';
-import 'package:custom_image_crop/custom_image_crop.dart';
+
+// import 'package:custom_image_crop/custom_image_crop.dart';
+import 'package:crop_image/crop_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,14 +19,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _loading = false;
   InformationDocuments _extractText = InformationDocuments("");
-  late CustomImageCropController controller;
+  final controller = CropController(
+    aspectRatio: 1,
+    defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
+  );
+
   late PickedFile? _pickedFile;
   late int step = 1;
-  @override
-  void initState() {
-    super.initState();
-    controller = CustomImageCropController();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   controller = CustomImageCropController();
+  // }
 
   @override
   void dispose() {
@@ -73,7 +79,8 @@ class _HomePageState extends State<HomePage> {
       _loading = true;
       step = 3;
       setState(() {});
-      _extractText = await DataTextExtract.captureData(_pickedFile);
+      final imageFace = await controller.croppedImage();
+      _extractText = await DataTextExtract.captureData(_pickedFile, imageFace);
       _loading = false;
     } else {
       step = 1;
@@ -113,35 +120,43 @@ class _HomePageState extends State<HomePage> {
 
   _getStep2() {
     final img = File(_pickedFile!.path);
-    return Column(children: [
-      Expanded(
-        child: CustomImageCrop(
-          cropController: controller,
-          // image: const AssetImage('assets/test.png'), // Any Imageprovider will work, try with a NetworkImage for example...
-          image: FileImage(img),
-          shape: CustomCropShape.Square,
-          
-        ),
-      )
-    ]);
+    return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: CropImage(
+              controller: controller,
+              image: Image.file(img),
+            ),
+          ),
+        );
+    // return Column(children: [
+    //   Expanded(
+    //     child: CustomImageCrop(
+    //       cropController: controller,
+    //       // image: const AssetImage('assets/test.png'), // Any Imageprovider will work, try with a NetworkImage for example...
+    //       image: FileImage(img),
+    //       shape: CustomCropShape.Square,
+    //     ),
+    //   )
+    // ]);
   }
 
   _getStep3() {
     return ListView(
       children: [
-       _extractText.hasData
-        ? InformationPersonComponent(_extractText)
-        : Container(
-            child: const Text(
-              "Escanee un documento para comenzar",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            padding: const EdgeInsets.only(top: 10.0),
-          )
+        _extractText.hasData
+            ? InformationPersonComponent(_extractText)
+            : Container(
+                child: const Text(
+                  "Escanee un documento para comenzar",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                padding: const EdgeInsets.only(top: 10.0),
+              )
       ],
     );
   }
