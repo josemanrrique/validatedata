@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:readdata/components/informationPerson.component.dart';
@@ -45,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       body: _getStepCurrent(),
       floatingActionButton: FloatingActionButton(
         onPressed: captureData,
-        tooltip: 'Increment',
+        tooltip: 'Next Step',
         child: _getIconFloatingActionButton(),
       ), //
     );
@@ -110,14 +112,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   _getStep2() {
+    final img = File(_pickedFile!.path);
     return Column(children: [
       Expanded(
         child: CustomImageCrop(
           cropController: controller,
           // image: const AssetImage('assets/test.png'), // Any Imageprovider will work, try with a NetworkImage for example...
-          image: const NetworkImage(
-              'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png'),
+          image: FileImage(img),
           shape: CustomCropShape.Square,
+          
         ),
       )
     ]);
