@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.blueGrey,
-        title: const Text("OCR Venezuela"),
+        title: Text(_getTitleCurrent()),
       ),
       // body: ListView(
       //_loading ? _getLoading() : _getBody(),
@@ -84,6 +84,7 @@ class _HomePageState extends State<HomePage> {
       _loading = false;
     } else {
       step = 1;
+      _extractText = InformationDocuments("");
     }
     setState(() {});
   }
@@ -99,7 +100,18 @@ class _HomePageState extends State<HomePage> {
       return _getStep1();
     }
   }
-
+  
+  String _getTitleCurrent() {
+      if (step == 1) {
+        return "OCR Venezuela";
+      } else if (step == 2) {
+        return "Seleccione el rostro";
+      } else if (step == 3) {
+        return _loading ? "Extrayendo datos" : "Datos extraidos";
+      } else {
+        return "OCR Venezuela";
+      }
+    }
   _getStep1() {
     return ListView(
       children: [
