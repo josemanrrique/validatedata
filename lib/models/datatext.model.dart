@@ -4,7 +4,7 @@ import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:readdata/models/informationDocuments.model.dart';
 
 class DataTextExtract {
-  static Future<InformationDocuments> captureData(PickedFile? pickedFile, Image image, PickedFile? selfie) async {
+  static Future<InformationDocuments> captureData(XFile? pickedFile, Image image, XFile? selfie) async {
     // File? _pickedImage;
     // _pickedImage = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     InformationDocuments extractText = InformationDocuments("");
@@ -26,10 +26,13 @@ class DataTextExtract {
     }
     return extractText;
   }
-  static Future<PickedFile?> readPhoto() async {
+  static Future<XFile?> readPhoto() async {
     final picker = ImagePicker();
-    PickedFile? pickedFile =
-        await picker.getImage(source: ImageSource.camera, imageQuality: 50);    
+    // PickedFile? pickedFile =
+    //     await picker.getImage(source: ImageSource.camera, imageQuality: 50);    
+    final pickedFile =
+        await picker.pickImage( source: ImageSource.gallery, imageQuality: 50);  
+
     return pickedFile;
   }
 }

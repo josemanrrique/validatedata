@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
 
-  late PickedFile? _pickedFile;
+  late XFile? _pickedFile;
   late int step = 1;
   // @override
   // void initState() {

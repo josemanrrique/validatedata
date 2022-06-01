@@ -21,7 +21,7 @@ class InformationDocuments {
       _extractText(dataRaw);
       photoDocumen = File(path!);
       selfie = File(selfiePath!);
-      if (imageFace != null) this.imageDNIFace = imageFace;
+      if (imageFace != null) imageDNIFace = imageFace;
       hasData = true;
     }
   }
@@ -30,19 +30,19 @@ class InformationDocuments {
     final String dataAux = dataRaw.replaceAll(".", "");
     final dataSplitAux = dataAux.split('\n');
     final List<String> dataSplit = [];
-    dataSplitAux.forEach((element) {
+    for (var element in dataSplitAux) {
       String temp = _getAllUppercase(element);
       if (temp.length > 1) {
         dataSplit.add(temp);
       }
-    });
+    }
 
     final _id = _getnumberci(dataAux);
     id = _id != null ? _getDataFormtatNumber(_id, 3, ".") : null;
 
     var index = 0;
     for (var i = 0; i < dataSplit.length - 1; i++) {
-      if (dataSplit[i].indexOf(_id!) > -1) {
+      if (dataSplit[i].contains(_id!)) {
         index = i;
         i = 100;
       }
@@ -102,7 +102,7 @@ class InformationDocuments {
       result.add(data.substring(match.start, match.end));
     }
     final tempResult = result.join("").trim().split(' ');
-    return tempResult[0] + " " + (tempResult[1] ?? "" );
+    return tempResult[0] + " " + (tempResult[1] ?? '');
   }
 
   String _getDataFormtatNumber(String data, int length, String chart) {
