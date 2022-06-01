@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _loading = false;
   InformationDocuments _extractText = InformationDocuments("");
-  final controller = CropController(
+  CropController controller = CropController(
     aspectRatio: 1,
     defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
@@ -65,6 +65,8 @@ class _HomePageState extends State<HomePage> {
     } else if (step == 2) {
       return const Icon(Icons.crop);
     } else if (step == 3) {
+      return const Icon(Icons.camera);
+    } else if (step == 4) {
       return const Icon(Icons.restore_rounded);
     } else {
       return const Icon(Icons.camera);
@@ -76,15 +78,23 @@ class _HomePageState extends State<HomePage> {
       _pickedFile = await DataTextExtract.readPhoto();
       step = 2;
     } else if (step == 2) {
-      _loading = true;
       step = 3;
-      setState(() {});
+    } else if (step == 3) {
       final imageFace = await controller.croppedImage();
-      _extractText = await DataTextExtract.captureData(_pickedFile, imageFace);
+      final selfie = await DataTextExtract.readPhoto();
+      _loading = true;
+      step = 4;
+      setState(() {});
+      _extractText =
+          await DataTextExtract.captureData(_pickedFile, imageFace, selfie);
       _loading = false;
     } else {
       step = 1;
       _extractText = InformationDocuments("");
+      controller = CropController(
+        aspectRatio: 1,
+        defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
+      );
     }
     setState(() {});
   }
@@ -95,29 +105,36 @@ class _HomePageState extends State<HomePage> {
     } else if (step == 2) {
       return _getStep2();
     } else if (step == 3) {
-      return _loading ? _getLoading() : _getStep3();
+      return _getStep3();
+    } else if (step == 4) {
+      return _loading ? _getLoading() : _getStep4();
     } else {
       return _getStep1();
     }
   }
-  
+
   String _getTitleCurrent() {
-      if (step == 1) {
-        return "OCR Venezuela";
-      } else if (step == 2) {
-        return "Seleccione el rostro";
-      } else if (step == 3) {
-        return _loading ? "Extrayendo datos" : "Datos extraidos";
-      } else {
-        return "OCR Venezuela";
-      }
+    if (step == 1) {
+      return "OCR Venezuela";
+    } else if (step == 2) {
+      return "Seleccione el rostro";
+    } else if (step == 3) {
+      return "Seleccione el rostro";
+    } else if (step == 4) {
+      return _loading ? "Extrayendo datos" : "Datos extraidos";
+    } else if (step == 5) {
+      return _loading ? "Extrayendo datos" : "Datos extraidos";
+    } else {
+      return "OCR Venezuela";
     }
+  }
+
   _getStep1() {
     return ListView(
       children: [
         Container(
           child: const Text(
-            "Escanee un documento para comenzar",
+            "Escanee un documento para comenzar y luego seleccione su rostro",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -125,35 +142,60 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           padding: const EdgeInsets.only(top: 10.0),
-        )
+        ),
+        Container(
+          child: const Image(
+              image: AssetImage(
+                'assets/document.png',
+              ),
+              fit: BoxFit.cover),
+          padding: const EdgeInsets.only(top: 10.0),
+        ),
       ],
     );
   }
 
   _getStep2() {
+    //revisar
     final img = File(_pickedFile!.path);
     return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: CropImage(
-              controller: controller,
-              image: Image.file(img),
-            ),
-          ),
-        );
-    // return Column(children: [
-    //   Expanded(
-    //     child: CustomImageCrop(
-    //       cropController: controller,
-    //       // image: const AssetImage('assets/test.png'), // Any Imageprovider will work, try with a NetworkImage for example...
-    //       image: FileImage(img),
-    //       shape: CustomCropShape.Square,
-    //     ),
-    //   )
-    // ]);
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: CropImage(
+          controller: controller,
+          image: Image.file(img),
+        ),
+      ),
+    );
   }
 
   _getStep3() {
+    return ListView(
+      children: [
+        Container(
+          child: const Text(
+            "Tome una foto de su rostro",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          padding: const EdgeInsets.only(top: 10.0),
+        ),
+        Container(
+          child: const Image(
+              image: AssetImage(
+                'assets/selfie.png',
+              ),
+              fit: BoxFit.cover),
+          padding: const EdgeInsets.only(top: 10.0),
+        ),
+      ],
+    );
+  }
+
+  _getStep4() {
     return ListView(
       children: [
         _extractText.hasData

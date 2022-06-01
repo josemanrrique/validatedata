@@ -10,16 +10,18 @@ class InformationDocuments {
   String? lastname;
   String? dateOfBirth;
   File? photoDocumen;
+  File? selfie;
   Image? imageDNIFace;
   bool active = false;
 
-  InformationDocuments(dataRaw,{ String? path, Image? imageFace}) {
+  InformationDocuments(dataRaw,{ String? path, Image? imageFace,  String? selfiePath}) {
     if (dataRaw != "") {
       this.dataRaw = dataRaw;
       _extractText(dataRaw);
       photoDocumen = File(path!);
+      selfie = File(selfiePath!);
       if(imageFace != null)
-        imageDNIFace = imageFace;
+        this.imageDNIFace = imageFace;
       hasData = true;
     }
   }
