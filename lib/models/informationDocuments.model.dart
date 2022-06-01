@@ -14,33 +14,43 @@ class InformationDocuments {
   Image? imageDNIFace;
   bool active = false;
 
-  InformationDocuments(dataRaw,{ String? path, Image? imageFace,  String? selfiePath}) {
+  InformationDocuments(dataRaw,
+      {String? path, Image? imageFace, String? selfiePath}) {
     if (dataRaw != "") {
       this.dataRaw = dataRaw;
       _extractText(dataRaw);
       photoDocumen = File(path!);
       selfie = File(selfiePath!);
-      if(imageFace != null)
-        this.imageDNIFace = imageFace;
+      if (imageFace != null) this.imageDNIFace = imageFace;
       hasData = true;
     }
   }
 
   _extractText(data) {
     final String dataAux = dataRaw.replaceAll(".", "");
-    final dataSplit = dataAux.split('\n');
+    final dataSplitAux = dataAux.split('\n');
+    final List<String> dataSplit = [];
+    dataSplitAux.forEach((element) {
+      String temp = _getAllUppercase(element);
+      if (temp.length > 1) {
+        dataSplit.add(temp);
+      }
+    });
+
     final _id = _getnumberci(dataAux);
     id = _id != null ? _getDataFormtatNumber(_id, 3, ".") : null;
+
     var index = 0;
     for (var i = 0; i < dataSplit.length - 1; i++) {
       if (dataSplit[i].indexOf(_id!) > -1) {
         index = i;
+        i = 100;
       }
     }
-    name = _getName(dataSplit[index + 1]); //dataSplit[index + 1];
-    lastname = _getName(dataSplit[index + 2]); //dataSplit[index + 2];
+    lastname = _getName(dataSplit[index + 1]); //dataSplit[index + 2];
+    name = _getName(dataSplit[index + 2]); //dataSplit[index + 1];
     dateOfBirth = _getDateOfBirth(dataAux.replaceAll(_id!, ""));
-    active = _getDateExp(dataAux);
+    active = _getDateExp(dataAux.replaceAll(_id, ""));
   }
 
   String? _getnumberci(data) {
@@ -74,14 +84,25 @@ class InformationDocuments {
         : null;
   }
 
-  _getName(data) {
-    final _regExp = RegExp(r"([A-Z\s])");
+  String _getAllUppercase(data) {
+    final _regExp = RegExp(r"([0-9A-Z\s])");
     Iterable<RegExpMatch> matches = _regExp.allMatches(data);
     List<String> result = [];
     for (RegExpMatch match in matches) {
       result.add(data.substring(match.start, match.end));
     }
     return result.join("").trim();
+  }
+
+  String _getName(data) {
+    final _regExp = RegExp(r"([A-Z\s])");
+    Iterable<RegExpMatch> matches = _regExp.allMatches(data);
+    List<String> result = [];
+    for (RegExpMatch match in matches) {
+      result.add(data.substring(match.start, match.end));
+    }
+    final tempResult = result.join("").trim().split(' ');
+    return tempResult[0] + " " + (tempResult[1] ?? "" );
   }
 
   String _getDataFormtatNumber(String data, int length, String chart) {

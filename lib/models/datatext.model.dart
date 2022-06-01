@@ -29,7 +29,7 @@ class DataTextExtract {
   static Future<PickedFile?> readPhoto() async {
     final picker = ImagePicker();
     PickedFile? pickedFile =
-        await picker.getImage(source: ImageSource.gallery, imageQuality: 50);    
+        await picker.getImage(source: ImageSource.camera, imageQuality: 50);    
     return pickedFile;
   }
 }
