@@ -81,15 +81,14 @@ class _HomePageState extends State<HomePage> {
       step = 3;
     } else if (step == 3) {
       final imageFace = await controller.croppedImage();
-      final imageFace2 = await controller.croppedBitmap();
       final selfie = await DataTextExtract.readPhoto();
       final validFace =
           await DataTextExtract.validData(controller, selfie!.path);
       _loading = true;
       step = 4;
       setState(() {});
-      // _extractText =
-      //     await DataTextExtract.captureData(_pickedFile, imageFace, selfie);
+      _extractText =
+          await DataTextExtract.captureData(_pickedFile, imageFace, selfie, validFace);
       _loading = false;
     } else {
       step = 1;

@@ -20,6 +20,7 @@ class InformationPersonComponent extends StatelessWidget {
                 "Apellido :", data.lastname, "No se pudo extraer el apellido"),
             _getInformation("Fecha de Nac :", data.dateOfBirth,
                 "No se pudo extraer la fehca de nacimiento"),
+                Text("Porcentaje diferencias" + data.validSelfie.toString()),
                 ImageDocument(data.photoDocumen!),
           ])
         : const Text("La fecha de expiracion no es válida");

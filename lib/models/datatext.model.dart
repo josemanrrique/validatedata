@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 class DataTextExtract {
   static Future<InformationDocuments> captureData(
-      XFile? pickedFile, Image image, XFile? selfie) async {
+      XFile? pickedFile, Image image, XFile? selfie, double validFace) async {
     // File? _pickedImage;
     // _pickedImage = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     InformationDocuments extractText = InformationDocuments("");
@@ -26,7 +26,8 @@ class DataTextExtract {
               }),
           path: pickedFile.path,
           imageFace: image,
-          selfiePath: selfie!.path);
+          selfiePath: selfie!.path,
+          validPhoto: validFace);
       // _extractText = await FlutterTesseractOcr.extractText(pickedFile.path, language: 'spa+eng',
       //   args: {
       //     "psm": "4",
@@ -42,7 +43,7 @@ class DataTextExtract {
     // PickedFile? pickedFile =
     //     await picker.getImage(source: ImageSource.camera, imageQuality: 50);
     final pickedFile =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
 
     return pickedFile;
   }
@@ -58,7 +59,7 @@ class DataTextExtract {
 
     var result = await compareImages(
         src1: face, src2: selfiePhoto, algorithm: PixelMatching());
-    return 0; //result;
+    return result; //result;
   }
 
   static Future<Uint8List> convertFile(File data) async {

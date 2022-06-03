@@ -12,16 +12,18 @@ class InformationDocuments {
   File? photoDocumen;
   File? selfie;
   Image? imageDNIFace;
+  double? validSelfie;
   bool active = false;
 
   InformationDocuments(dataRaw,
-      {String? path, Image? imageFace, String? selfiePath}) {
+      {String? path, Image? imageFace, String? selfiePath, double? validPhoto}) {
     if (dataRaw != "") {
       this.dataRaw = dataRaw;
       _extractText(dataRaw);
       photoDocumen = File(path!);
       selfie = File(selfiePath!);
       if (imageFace != null) imageDNIFace = imageFace;
+      validSelfie = validPhoto;
       hasData = true;
     }
   }
