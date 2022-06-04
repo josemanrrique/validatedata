@@ -16,7 +16,10 @@ class InformationDocuments {
   bool active = false;
 
   InformationDocuments(dataRaw,
-      {String? path, Image? imageFace, String? selfiePath, double? validPhoto}) {
+      {String? path,
+      Image? imageFace,
+      String? selfiePath,
+      double? validPhoto}) {
     if (dataRaw != "") {
       this.dataRaw = dataRaw;
       _extractText(dataRaw);
@@ -104,7 +107,7 @@ class InformationDocuments {
       result.add(data.substring(match.start, match.end));
     }
     final tempResult = result.join("").trim().split(' ');
-    return tempResult[0] + " " + (tempResult[1] ?? '');
+    return tempResult[0] + " " + (tempResult.length > 1 ? tempResult[1] : '');
   }
 
   String _getDataFormtatNumber(String data, int length, String chart) {
