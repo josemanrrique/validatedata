@@ -13,23 +13,20 @@ import 'package:image_compare/image_compare.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DataTextExtract {
-  static Future<InformationDocuments> captureData(
-      XFile? pickedFile, Image image, XFile? selfie, double validFace) async {
+  static InformationDocuments captureData(InformationOcrRequest dataOrc,
+      ValidFace valid, XFile? pickedFile, Image image, XFile? selfie) {
     // File? _pickedImage;
     // _pickedImage = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     InformationDocuments extractText = InformationDocuments("");
     if (pickedFile?.path != null) {
       extractText = InformationDocuments(
-          await FlutterTesseractOcr.extractText(pickedFile!.path,
-              language: 'spa',
-              args: {
-                "psm": "4",
-                "preserve_interword_spaces": "1",
-              }),
-          path: pickedFile.path,
-          imageFace: image,
-          selfiePath: selfie!.path,
-          validPhoto: validFace);
+        dataOrc.dataRaw,
+        dataOrc: dataOrc,
+        valid: valid,
+        path: pickedFile!.path,
+        imageFace: image,
+        selfiePath: selfie!.path,
+      );
       // _extractText = await FlutterTesseractOcr.extractText(pickedFile.path, language: 'spa+eng',
       //   args: {
       //     "psm": "4",
@@ -102,7 +99,7 @@ class DataTextExtract {
       result.process = true;
       result.dataRaw = decodedResp["dataRaw"];
       result.id = decodedResp["id"];
-      result.name = decodedResp["id"];
+      result.name = decodedResp["name"];
       result.lastname = decodedResp["lastname"];
       result.dateOfBirth = decodedResp["dateOfBirth"];
       result.expiration = decodedResp["expiration"];

@@ -20,7 +20,7 @@ class InformationPersonComponent extends StatelessWidget {
                 "Apellido :", data.lastname, "No se pudo extraer el apellido"),
             _getInformation("Fecha de Nac :", data.dateOfBirth,
                 "No se pudo extraer la fehca de nacimiento"),
-            _getIsValidSelfie(data.validSelfie!),
+            _getIsValidSelfie(data.valid!),
             ImageDocument(data.photoDocumen!),
           ])
         : const Text("La fecha de expiracion no es válida");
@@ -35,11 +35,11 @@ class InformationPersonComponent extends StatelessWidget {
     );
   }
 
-  _getIsValidSelfie(double data) {
+  _getIsValidSelfie(ValidFace data) {
     String result = "";
-    if (data < 0.80) {
+    if (data.diff! < 0.80) {
       result = "Validación exitosa";
-    } else if (data >= 0.80) {
+    } else if (data.diff! >= 0.80) {
       result = "Validación no exitosa";
     }
     return _getText(result);

@@ -80,18 +80,19 @@ class _HomePageState extends State<HomePage> {
 
   validState() {
     if ((_dataOrc.process) && (_validFace.process)) {
+      _extractText = DataTextExtract.captureData(
+          _dataOrc, _validFace, _pickedFile, _imageFace!, _selfie);
       _loading = false;
       setState(() {});
+      //  // _extractText =
+      //   //     await DataTextExtract.captureData(_pickedFile, imageFace, selfie, validFace);
+      //   _loading = false;
     }
     // _dataOrc;
     // _imageFace;
     // _pickedFile;
     // _selfie;
     // _validFace;
-
-    //  // _extractText =
-    //   //     await DataTextExtract.captureData(_pickedFile, imageFace, selfie, validFace);
-    //   _loading = false;
   }
 
   captureData() async {
