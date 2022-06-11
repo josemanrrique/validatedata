@@ -1,16 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui';
 import 'dart:convert';
 
 import 'package:crop_image/crop_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:readdata/models/informationDocuments.model.dart';
-import 'package:image_compare/image_compare.dart';
-import 'package:path_provider/path_provider.dart';
 
 class DataTextExtract {
   static InformationDocuments captureData(InformationOcrRequest dataOrc,
@@ -52,13 +48,6 @@ class DataTextExtract {
     final url = Uri.https(_baseUrl, '/validatFace');
     final request = http.MultipartRequest('POST', url);
     request.headers['Accept'] = 'application/json';
-
-    final imageFace2 = await crop.croppedBitmap();
-    imageFace2.toByteData();
-    final data = await imageFace2.toByteData(
-      format: ImageByteFormat.png,
-    );
-    final faceBytes = await convertFile(await writeToFile(data!));
 
     final faceDocumen = http.MultipartFile.fromBytes(
         'faceDocument', await selfie.readAsBytes());
@@ -113,15 +102,5 @@ class DataTextExtract {
 
   static Future<Uint8List> convertFile(File data) async {
     return await data.readAsBytes();
-  }
-
-  static Future<File> writeToFile(ByteData data) async {
-    final buffer = data.buffer;
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
-    var filePath =
-        tempPath + '/file_01.tmp'; // file_01.tmp is dump file, can be anything
-    return new File(filePath).writeAsBytes(
-        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 }

@@ -13,17 +13,17 @@ class InformationPersonComponent extends StatelessWidget {
         ? Column(children: [
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             _getInformation("Número :", data.id,
-                "No se pudo extraer el numero de identificacion"),
+                "Fallo lectura"),
             _getInformation(
-                "Nombre :", data.name, "No se pudo extraer el nombre"),
+                "Nombre :", data.name, "Fallo lectura"),
             _getInformation(
-                "Apellido :", data.lastname, "No se pudo extraer el apellido"),
+                "Apellido :", data.lastname, "Fallo lectura"),
             _getInformation("Fecha de Nac :", data.dateOfBirth,
-                "No se pudo extraer la fehca de nacimiento"),
+                "Fallo lectura"),
             _getIsValidSelfie(data.valid!),
             ImageDocument(data.photoDocumen!),
           ])
-        : const Text("La fecha de expiracion no es válida");
+        : const Text("Fallo lectura");
   }
 
   _getInformation(label, data, noData) {
