@@ -19,6 +19,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _loading = false;
   InformationDocuments _extractText = InformationDocuments("");
+  InformationOcrRequest _dataOrc = InformationOcrRequest();
+  ValidFace _validFace = ValidFace();
+  Image? _imageFace;
+  XFile? _selfie;
+
   CropController controller = CropController(
     aspectRatio: 1,
     defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
@@ -73,26 +78,44 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  validState() {
+    if ((_dataOrc.process) && (_validFace.process)) {
+      _loading = false;
+      setState(() {});
+    }
+    // _dataOrc;
+    // _imageFace;
+    // _pickedFile;
+    // _selfie;
+    // _validFace;
+
+    //  // _extractText =
+    //   //     await DataTextExtract.captureData(_pickedFile, imageFace, selfie, validFace);
+    //   _loading = false;
+  }
+
   captureData() async {
     if (step == 1) {
       _pickedFile = await DataTextExtract.readPhoto();
+      DataTextExtract.getOcrApi(_pickedFile)
+          .then((value) => {_dataOrc = value, validState()});
       step = 2;
     } else if (step == 2) {
       step = 3;
     } else if (step == 3) {
-      final imageFace = await controller.croppedImage();
-      final selfie = await DataTextExtract.readPhoto();
-      final validFace =
-          await DataTextExtract.validData(controller, selfie!.path);
+      _imageFace = await controller.croppedImage();
+      _selfie = await DataTextExtract.readPhoto();
+      // final validFace = await DataTextExtract.validData(controller, _selfie!);
+      DataTextExtract.validData(controller, _selfie!)
+          .then((value) => {_validFace = value, validState()});
       _loading = true;
       step = 4;
       setState(() {});
-      _extractText =
-          await DataTextExtract.captureData(_pickedFile, imageFace, selfie, validFace);
-      _loading = false;
     } else {
       step = 1;
       _extractText = InformationDocuments("");
+      _dataOrc = InformationOcrRequest();
+      _validFace = ValidFace();
       controller = CropController(
         aspectRatio: 1,
         defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),

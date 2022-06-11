@@ -2,6 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
+class InformationOcrRequest {
+  late bool process = false;
+  String? dataRaw = "";
+  String? id;
+  String? name;
+  String? lastname;
+  String? dateOfBirth;
+  String? expiration;
+}
+
+class ValidFace {
+  late bool process = false;
+  late double? diff;
+  late double? distance;
+}
+
 class InformationDocuments {
   bool hasData = false;
   late String dataRaw = "";
