@@ -80,13 +80,15 @@ class DataTextExtract {
     final data = await imageFace2.toByteData(
       format: ImageByteFormat.png,
     );
-    final faceCrop = await convertFile(await writeToFile(data!));
+    final faceCropFile = await writeToFile(data!);
+    final faceCrop = await convertFile(await compress(faceCropFile.path));
 
     final faceDocumen = http.MultipartFile.fromBytes('faceDocument', faceCrop);
     request.files.add(faceDocumen);
 
-    final face =
-        http.MultipartFile.fromBytes('selfie', await selfie.readAsBytes());
+    final selfieCompresed = await compress(selfie.path);
+    final face = http.MultipartFile.fromBytes(
+        'selfie', await selfieCompresed.readAsBytes());
     request.files.add(face);
     ValidFace result = ValidFace();
     try {

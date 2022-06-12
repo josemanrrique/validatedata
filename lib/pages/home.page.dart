@@ -115,13 +115,16 @@ class _HomePageState extends State<HomePage> {
     switch (step) {
       case "information":
         _pickedFile = await DataTextExtract.readPhoto();
-        step = "cropCI";
+        if (_pickedFile != null) {
+          DataTextExtract.getOcrApi(_pickedFile!)
+              .then((value) => {_dataOrc = value, validState()});
+          step = "cropFace";
+          // step = "cropCI";
+        }
         break;
       case "cropCI":
-        final img = await DataTextExtract.getImgCi(controller);
-        DataTextExtract.getOcrApi(_pickedFile!)
-            .then((value) => {_dataOrc = value, validState()});
-        step = "cropFace";
+        // final img = await DataTextExtract.getImgCi(controller);
+        // step = "cropFace";
         break;
       case "cropFace":
         step = "selfie";
