@@ -22,15 +22,16 @@ class _HomePageState extends State<HomePage> {
   InformationOcrRequest _dataOrc = InformationOcrRequest();
   ValidFace _validFace = ValidFace();
   Image? _imageFace;
-  XFile? _selfie;
+  File? _selfie;
+  bool show = false;
 
   CropController controller = CropController(
     aspectRatio: 1,
     defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
   );
 
-  late XFile? _pickedFile;
-  late int step = 1;
+  late File? _pickedFile;
+  late String step = "information";
   // @override
   // void initState() {
   //   super.initState();
@@ -51,11 +52,15 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.blueGrey,
         title: Text(_getTitleCurrent()),
       ),
-      // body: ListView(
-      //_loading ? _getLoading() : _getBody(),
-      //   ],
-      // ),
       body: _getStepCurrent(),
+      // body: show
+      //     ? Container(
+      //         child: Image.file(
+      //           File(_pickedFile!.path),
+      //           fit: BoxFit.cover,
+      //         ),
+      //       )
+      //     : Container(),
       floatingActionButton: FloatingActionButton(
         onPressed: captureData,
         tooltip: 'Next Step',
@@ -65,16 +70,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   _getIconFloatingActionButton() {
-    if (step == 1) {
-      return const Icon(Icons.camera);
-    } else if (step == 2) {
-      return const Icon(Icons.crop);
-    } else if (step == 3) {
-      return const Icon(Icons.camera);
-    } else if (step == 4) {
-      return const Icon(Icons.restore_rounded);
+    switch (step) {
+      case "cropCI":
+        return const Icon(Icons.crop);
+      case "cropFace":
+        return const Icon(Icons.crop);
+      case "process":
+        return const Icon(Icons.restore_rounded);
+      default:
+        return const Icon(Icons.camera);
+    }
+  }
+
+  _testcaptureData() async {
+    if (!show) {
+      final pickedFileTemp = await DataTextExtract.readPhoto();
+
+      show = true;
+      setState(() {});
     } else {
-      return const Icon(Icons.camera);
+      show = false;
+      setState(() {});
     }
   }
 
@@ -96,66 +112,74 @@ class _HomePageState extends State<HomePage> {
   }
 
   captureData() async {
-    if (step == 1) {
-      _pickedFile = await DataTextExtract.readPhoto();
-      DataTextExtract.getOcrApi(_pickedFile)
-          .then((value) => {_dataOrc = value, validState()});
-      step = 2;
-    } else if (step == 2) {
-      step = 3;
-    } else if (step == 3) {
-      _imageFace = await controller.croppedImage();
-      _selfie = await DataTextExtract.readPhoto();
-      // final validFace = await DataTextExtract.validData(controller, _selfie!);
-      DataTextExtract.validData(controller, _selfie!)
-          .then((value) => {_validFace = value, validState()});
-      _loading = true;
-      step = 4;
-      setState(() {});
-    } else {
-      step = 1;
-      _extractText = InformationDocuments("");
-      _dataOrc = InformationOcrRequest();
-      _validFace = ValidFace();
-      controller = CropController(
-        aspectRatio: 1,
-        defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
-      );
+    switch (step) {
+      case "information":
+        _pickedFile = await DataTextExtract.readPhoto();
+        step = "cropCI";
+        break;
+      case "cropCI":
+        final img = await DataTextExtract.getImgCi(controller);
+        DataTextExtract.getOcrApi(_pickedFile!)
+            .then((value) => {_dataOrc = value, validState()});
+        step = "cropFace";
+        break;
+      case "cropFace":
+        step = "selfie";
+        break;
+      case "selfie":
+        _imageFace = await controller.croppedImage();
+        _selfie = await DataTextExtract.readPhoto();
+        // final validFace = await DataTextExtract.validData(controller, _selfie!);
+        DataTextExtract.validData(controller, _selfie!)
+            .then((value) => {_validFace = value, validState()});
+        _loading = true;
+        step = "process";
+        break;
+      default:
+        step = "information";
+        _extractText = InformationDocuments("");
+        _dataOrc = InformationOcrRequest();
+        _validFace = ValidFace();
+        controller = CropController(
+          aspectRatio: 1,
+          defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
+        );
+        break;
     }
     setState(() {});
   }
 
   _getStepCurrent() {
-    if (step == 1) {
-      return _getStep1();
-    } else if (step == 2) {
-      return _getStep2();
-    } else if (step == 3) {
-      return _getStep3();
-    } else if (step == 4) {
-      return _loading ? _getLoading() : _getStep4();
-    } else {
-      return _getStep1();
+    switch (step) {
+      case "information":
+        return _getStepInformation();
+      case "cropCI":
+        return _getStepcropCI();
+      case "cropFace":
+        return _getStepcropFace();
+      case "selfie":
+        return _getStepSelfie();
+      case "process":
+        return _loading ? _getLoading() : _getStepData();
+      default:
+        return _getStepInformation();
     }
   }
 
   String _getTitleCurrent() {
-    if (step == 1) {
-      return "OCR Venezuela";
-    } else if (step == 2) {
-      return "Seleccione el rostro";
-    } else if (step == 3) {
-      return "Seleccione el rostro";
-    } else if (step == 4) {
-      return _loading ? "Extrayendo datos" : "Datos extraidos";
-    } else if (step == 5) {
-      return _loading ? "Extrayendo datos" : "Datos extraidos";
-    } else {
-      return "OCR Venezuela";
+    switch (step) {
+      case "cropCI":
+        return "Seleccione la ci";
+      case "cropFace":
+        return "Seleccione el rostro";
+      case "process":
+        return _loading ? "Extrayendo datos" : "Datos extraidos";
+      default:
+        return "OCR Venezuela";
     }
   }
 
-  _getStep1() {
+  _getStepInformation() {
     return ListView(
       children: [
         Container(
@@ -181,7 +205,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _getStep2() {
+  _getStepcropCI() {
     //revisar
     final img = File(_pickedFile!.path);
     return Center(
@@ -195,7 +219,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _getStep3() {
+  _getStepcropFace() {
+    //revisar
+    final img = File(_pickedFile!.path);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: CropImage(
+          controller: controller,
+          image: Image.file(img),
+        ),
+      ),
+    );
+  }
+
+  _getStepSelfie() {
     return ListView(
       children: [
         Container(
@@ -221,7 +259,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _getStep4() {
+  _getStepData() {
     return ListView(
       children: [
         _extractText.hasData
